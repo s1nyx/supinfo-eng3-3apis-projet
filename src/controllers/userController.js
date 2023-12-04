@@ -1,5 +1,11 @@
-exports.signup = async (request, response) => {
-};
+exports.createUser = async (request, response) => {
+}
 
-exports.login = async (request, response) => {
+exports.getUser = async (request, response) => {
+}
+
+exports.updateUser = async (request, response) => {
+}
+
+exports.deleteUser = async (request, response) => {
 }

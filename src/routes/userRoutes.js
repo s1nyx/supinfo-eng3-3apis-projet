@@ -1,9 +1,18 @@
-const { Router } = require('express');
-const userController = require('../controllers/userController');
+const { Router } = require('express')
+const userController = require('../controllers/userController')
 
-const router = Router();
+const router = Router()
 
-router.post('/signup', userController.signup);
-router.post('/login', userController.login);
+// Création d'un utilisateur
+router.post("/", userController.createUser)
 
-module.exports = router;
+// Récupérer les informations d'un utilisateur
+router.get('/:id', userController.getUser)
+
+// Mise à jour des informations d'un utilisateur
+router.patch('/:id', userController.updateUser)
+
+// Suppressions des informations d'un utilisateur
+router.delete('/:id', userController.deleteUser)
+
+module.exports = router
