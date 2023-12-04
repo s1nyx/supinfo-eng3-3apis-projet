@@ -1,0 +1,11 @@
+{
+  "name": "supinfo-eng3-3apis-projet",
+  "version": "1.0.0",
+  "main": "src/init.js",
+  "repository": "git@github.com:s1nyx/supinfo-eng3-3apis-projet.git",
+  "author": "s1nyx <sinyx.contact@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
