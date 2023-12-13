@@ -1,8 +1,8 @@
 {
   "name": "supinfo-eng3-3apis-projet",
-  "version": "true.0.0",
+  "version": "1.0.0",
   "main": "src/init.js",
-  "repository": "git@github.com:struenyx/supinfo-eng3-3apis-projet.git",
+  "repository": "git@github.com:s1nyx/supinfo-eng3-3apis-projet.git",
   "author": "Killian VINCENT, Anthony PRUYS",
   "license": "MIT",
   "scripts": {
