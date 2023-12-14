@@ -27,21 +27,21 @@ exports.getUser = async (request, response) => {
 }
 
 exports.updateUser = async (request, response) => {
-    const user = await User.findByIdAndUpdate(request.params.id, request.body)
+    try {
+        const user = await User.findByIdAndUpdate(request.params.id, request.body)
 
-    if (!user) {
-        return response.status(404).json({ error: "User not found" })
+        response.status(200).json({ user })
+    } catch (error) {
+        response.status(404).json({ error: "User not found" })
     }
-
-    return response.status(200).json({ user })
 }
 
 exports.deleteUser = async (request, response) => {
-    const user = await User.findByIdAndDelete(request.params.id)
+    try {
+        const user = await User.findByIdAndDelete(request.params.id)
 
-    if (!user) {
-        return response.status(404).json({ error: "User not found" })
+        response.status(404).json({ error: "User not found" })
+    } catch (error) {
+        response.status(200).json({ message: "User deleted successfully" })
     }
-
-    return response.status(200).json({ message: "User deleted successfully" })
 }
