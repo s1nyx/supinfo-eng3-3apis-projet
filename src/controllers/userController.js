@@ -30,6 +30,8 @@ exports.updateUser = async (request, response) => {
     try {
         const user = await User.findByIdAndUpdate(request.params.id, request.body)
 
+        // TODO: faire renvoyer le nouveau user dans la response
+
         response.status(200).json({ user })
     } catch (error) {
         response.status(404).json({ error: "User not found" })
@@ -40,8 +42,8 @@ exports.deleteUser = async (request, response) => {
     try {
         const user = await User.findByIdAndDelete(request.params.id)
 
-        response.status(404).json({ error: "User not found" })
-    } catch (error) {
         response.status(200).json({ message: "User deleted successfully" })
+    } catch (error) {
+        response.status(404).json({ error: "User not found" })
     }
 }
