@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const stationSchema = mongoose.Schema({
+const stationSchema = new mongoose.Schema({
     name: {type: String, required: true},
     open_hour: {type: Date, required: true},
     close_hour: {type: Date, required: true},

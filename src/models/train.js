@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const trainSchema = mongoose.Schema({
+const trainSchema = new mongoose.Schema({
     name: {type: String, required: true},
     start_station: {type: String, required: true},
     end_station: {type: String, required: true},
