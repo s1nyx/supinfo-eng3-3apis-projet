@@ -1,16 +1,25 @@
+const bcrypt = require('bcrypt')
 const User = require('../models/user')
+
+// 10 est un bon nombre de tours pour la sécurité
+const SALT_ROUNDS = 10
 
 exports.createUser = async (request, response) => {
     const { email, username, password, role } = request.body
 
     try {
-        const user = new User({ email, username, password, role })
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+        const user = new User({ email, username, password: hashedPassword, role })
+
+        if (!user) {
+            return response.status(400).json({ error: "User not created" })
+        }
 
         await user.save()
 
         response.status(201).json({ user })
     } catch (error) {
-        response.status(400).json({ error: "User not created" })
+        response.status(500).json({ error: "Internal server error" })
     }
 }
 
@@ -25,6 +34,13 @@ exports.getUser = async (request, response) => {
 
 exports.updateUser = async (request, response) => {
     try {
+        const { password } = request.body
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+            request.body.password = hashedPassword
+        }
+
         const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true })
 
         response.status(200).json({ user })
