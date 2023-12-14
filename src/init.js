@@ -14,8 +14,8 @@ const app = express()
 
 const PORT = 3000
 
-mangoose.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.0', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to database'))
+mangoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to the database'))
     .catch((err) => console.log(err))
 
 
@@ -39,7 +39,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/users', userRoutes)
 app.use('/trains', trainRoutes)
-app.use('/', authRoutes)
+app.use('/auth', authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`)

@@ -21,3 +21,22 @@ Supprimer un utilisateur
 ```bash
 curl -X DELETE localhost:3000/users/<ID>
 ```
+
+S'inscrire
+```bash
+curl -X POST localhost:3000/auth/signup \
+     -H "Content-Type: application/json" \
+     -d '{"email": "email@example.com", "username": "exemple1", "password": "yourPassword"}'
+```
+
+Se connecter
+```bash
+curl -X POST localhost:3000/auth/signin \
+     -H "Content-Type: application/json" \
+     -d '{"email": "email@example.com", "password": "yourPassword"}'
+```
+
+Se déconnecter
+```bash
+curl -X POST localhost:3000/auth/signout
+```
