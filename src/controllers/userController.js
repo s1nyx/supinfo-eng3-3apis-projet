@@ -1,7 +1,6 @@
 const User = require('../models/user')
 
 exports.createUser = async (request, response) => {
-    // TODO: validation
     const { email, username, password, role } = request.body
 
     try {
@@ -16,8 +15,6 @@ exports.createUser = async (request, response) => {
 }
 
 exports.getUser = async (request, response) => {
-    // TODO: valider le param id
-
     try {
         const user = await User.findById(request.params.id)
         response.status(200).json({ user })
@@ -28,9 +25,7 @@ exports.getUser = async (request, response) => {
 
 exports.updateUser = async (request, response) => {
     try {
-        const user = await User.findByIdAndUpdate(request.params.id, request.body)
-
-        // TODO: faire renvoyer le nouveau user dans la response
+        const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true })
 
         response.status(200).json({ user })
     } catch (error) {
