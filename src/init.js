@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express')
 const mangoose = require('mongoose')
 const session = require('express-session');
@@ -22,7 +24,7 @@ app.use(express.json())
 
 // Utilisation des sessions
 app.use(session({
-    secret: process.env., // Remplacez par une chaîne de caractères secrète
+    secret: process.env.SESSION_SECRET, // Remplacez par une chaîne de caractères secrète
     resave: false,
     saveUninitialized: false
 }));
