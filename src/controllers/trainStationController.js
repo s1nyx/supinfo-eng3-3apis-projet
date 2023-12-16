@@ -12,13 +12,36 @@ exports.createTrainStation = async (request, response) => {
 }
 
 exports.getTrainStationList = async (request, response) => {
-    const trainStations = await TrainStation.find()
 
-    if (!trainStations) {
-        return response.status(404).json({error: "Cannot find any train stations"})
+    const sortFields = req.query.sort ? req.query.sort.split(',') : []
+
+    let result = TrainStation.find()
+
+    if (sortFields.length > 0) { //In case we need to sort
+        const sortOptions = []
+        sortFields.foreach((field) => {
+            const sortOrder = 1
+    
+            if (field[0] === "-") {
+                sortOrder = -1
+                field = field.substring(1)
+            }
+
+            //Only field that we can sort by according to the subject is the name
+            
+            if ( ["name"].includes(field) ) { 
+                sortOptions.push([field, sortOrder])
+            }
+
+            result.sort(sortOptions)
+        })
     }
 
-    return response.status(200).json(trainStations)
+    if (!result) {
+        return result.status(404).json({error: "Cannot find any train stations"})
+    }
+
+    return response.status(200).json(result)
 }
 
 exports.getTrainStation = async (request, response) => {
