@@ -1,8 +1,13 @@
 const TrainStation = require('../models/trainStation')
 
 exports.createTrainStation = async (request, response) => {
-    const { name  } = request.body
-    const trainStation = new TrainStation.create({  })
+    const { name, open_hour, close_hour, image } = request.body
+    const trainStation = await TrainStation.create({
+        name: name,
+        open_hour: open_hour,
+        close_hour: close_hour,
+        image: image //Image is the file path for the image
+    })
 
     if (!trainStation) {
         return response.status(400).json({ error: "Train station not created" })
@@ -13,9 +18,9 @@ exports.createTrainStation = async (request, response) => {
 
 exports.getTrainStationList = async (request, response) => {
 
-    const sortFields = req.query.sort ? req.query.sort.split(',') : []
+    const sortFields = request.query.sort ? request.query.sort.split(',') : []
 
-    let result = TrainStation.find()
+    let result = await TrainStation.find()
 
     if (sortFields.length > 0) { //In case we need to sort
         const sortOptions = []

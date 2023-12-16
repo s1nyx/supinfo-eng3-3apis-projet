@@ -1,9 +1,24 @@
 const Train = require('../models/train')
+const TrainStation = require('../models/trainStation')
+
 
 exports.createTrain = async (request, response) => {
-    const { name  } = request.body
-    const train = new Train.create({  })
-
+    const { name, start_station, end_station, time_of_departure } = request.body
+    
+    const start = await TrainStation.findOne({name: start_station})
+    const end = await TrainStation.findOne({name: end_station})
+    
+    if (start === null || end === null) {
+        return response.status(400).json({error: "Invalid train stations given"})
+    }
+    
+    const train = await Train.create({
+        name: name,
+        start_station: start_station,
+        end_station: end_station,
+        time_of_departure: time_of_departure
+    })
+    
     if (!train) {
         return response.status(400).json({ error: "Train not created" })
     }
