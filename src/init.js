@@ -10,6 +10,7 @@ const User = require('./models/user')
 const userRoutes = require('./routes/userRoutes')
 const authRoutes = require('./routes/authRoutes')
 const trainRoutes = require(('./routes/trainRoutes'))
+const trainStationRoutes = require('./routes/trainStationRoutes')
 const app = express()
 
 const PORT = 3000
@@ -39,6 +40,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/users', userRoutes)
 app.use('/trains', trainRoutes)
+app.use('/stations', trainStationRoutes)
 app.use('/auth', authRoutes)
 
 app.listen(PORT, () => {
