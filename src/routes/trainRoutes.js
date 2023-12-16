@@ -5,7 +5,7 @@ const authMiddleware = require('../middlewares/authMiddleware')
 const router = Router()
 
 // Création d'un train
-router.post("/", authMiddleware.isLoggedIn, trainController.createTrain)
+router.post("/", trainController.createTrain)
 
 // Récupérer les informations de tout les trains
 router.get('/', trainController.getTrainList)
@@ -14,9 +14,9 @@ router.get('/', trainController.getTrainList)
 router.get('/:id', trainController.getTrain)
 
 // Mise à jour des informations d'un train
-router.patch('/:id', authMiddleware.isLoggedIn, trainController.updateTrain)
+router.patch('/:id', trainController.updateTrain)
 
 // Suppressions des informations d'un train
-router.delete('/:id', authMiddleware.isLoggedIn, trainController.deleteTrain)
+router.delete('/:id', trainController.deleteTrain)
 
 module.exports = router
