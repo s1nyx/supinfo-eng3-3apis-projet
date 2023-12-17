@@ -42,9 +42,14 @@ before(async function() {
 
 })
 
-describe("POST /stations/", () => {
-    it("Should create stationA", async () => {
-        // Create and login as an admin
+describe("POST /stations", () => {
+
+    /*
+        For some reason, chai's cookies are reset after the before
+        We are forced to login here. Bad design, but no other choices
+    */
+    it("Should create the first station", async () => {
+        // Create an admin user
         await new Promise((resolve, reject) => {
             agent
                 .post('/users')
@@ -58,6 +63,7 @@ describe("POST /stations/", () => {
                 });
         });
 
+        // Login
         await new Promise((resolve, reject) => {
             agent
                 .post('/auth/signin')
@@ -69,11 +75,12 @@ describe("POST /stations/", () => {
                     if (err) {
                         reject(err)
                     } else {
-                        console.log(res.body)
                         resolve(res)
                     }
                 })
         })
+
+        //create the first station
         return new Promise((resolve, reject) => {
             agent
             .post('/stations')
@@ -82,13 +89,27 @@ describe("POST /stations/", () => {
                 if (err) {
                     reject(err)
                 } else {
-                    console.log(res.body)
+
                     expect(res).to.have.status(201)
                     expect(res.body).to.be.a('object')
+                    expect(res.body).to.have.property('_id')
                     resolve(res)
                 }
             })
         })
+    })
+
+    it("Should create a second station", (done) => {
+        agent
+            .post('/stations')
+            .send(secondStation)
+            .end( (err, res) => {
+
+                expect(res).to.have.status(201)
+                expect(res.body).to.be.a('object')
+                expect(res.body).to.have.property('_id')
+                done()
+            })
     })
 
 })
