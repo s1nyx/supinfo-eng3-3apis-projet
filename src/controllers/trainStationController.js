@@ -80,18 +80,29 @@ exports.uploadStationImage = async (request, response) => {
 
     const file = request.file
 
-    const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
-    if (file.size > maxSizeInBytes) {
-        return resizeImage.status(400).json({error: `File size exceeds the 10 MB limit!`})
-    }
-
+    //Block invalid extensions and save upload
     const filePath = `uploads\\${file.originalname}`
-
+    const extension = filePath.split('.').pop()
+    
+    if (!["png", "jpeg"].includes(extension)) {
+        return response.status(400).json({error: `Only png or jpeg files are allowed`})
+    }
+    
+    
+    
     fs.rename(file.path, filePath, (error) => {
         if (error) {
-           return response.status(500).json({error: `Internal error saving the iamge`})
+            return response.status(500).json({error: `Internal error saving the iamge`})
+        }
+        //Resize image if it is too big
+        const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
+        if (file.size > maxSizeInBytes) {
+            utils.resizeImage(filePath)
+            // return response.status(400).json({error: `File size exceeds the 10 MB limit!`})
         }
     })
+    
+    
 
     const trainStation = await TrainStation.findOneAndUpdate(
         {name: stationName},
