@@ -3,6 +3,7 @@ const userController = require('../controllers/userController')
 const validateRequest = require('../middlewares/validateRequestMiddleware')
 const { userSchema, userIdSchema, updateUserSchema } = require('../validators/userValidator')
 const { isLoggedIn } = require('../middlewares/authMiddleware')
+const { authorizeSelfOrRoles } = require('../middlewares/roleMiddleware')
 
 const router = Router()
 
@@ -10,7 +11,7 @@ const router = Router()
 router.post("/", validateRequest(userSchema), userController.createUser)
 
 // Récupérer les informations d'un utilisateur
-router.get('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, userController.getUser)
+router.get('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, authorizeSelfOrRoles(['employee', 'admin']), userController.getUser)
 
 // Mise à jour des informations d'un utilisateur
 router.patch('/:id', validateRequest(userIdSchema, 'params'), validateRequest(updateUserSchema), isLoggedIn, userController.updateUser)
