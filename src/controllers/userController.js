@@ -33,6 +33,15 @@ exports.getUser = async (request, response) => {
 }
 
 exports.updateUser = async (request, response) => {
+    const loggedInUserId = request.user._id
+    const userRole = request.user.role
+    const userIdToUpdate = request.params.id
+
+    // Il doit être admin ou alors c'est son propre compte
+    if (userIdToUpdate !== loggedInUserId.toString() && userRole !== 'admin') {
+        return response.status(403).json({ error: "You can only update your own profile unless you're an admin" });
+    }
+
     try {
         const { password } = request.body
 
@@ -45,13 +54,22 @@ exports.updateUser = async (request, response) => {
 
         response.status(200).json({ user })
     } catch (error) {
+        console.error(error)
         response.status(404).json({ error: "User not found" })
     }
 }
 
 exports.deleteUser = async (request, response) => {
+    const userId = request.params.id
+    const loggedInUserId = request.user._id
+
+    // On vérifie que l'utilisateur qui fait la requête est bien le propriétaire du compte
+    if (userId !== loggedInUserId.toString()) {
+        return response.status(403).json({ message: 'You can only delete your own account' })
+    }
+
     try {
-        const user = await User.findByIdAndDelete(request.params.id)
+        await User.findByIdAndDelete(request.params.id)
 
         response.status(200).json({ message: "User deleted successfully" })
     } catch (error) {
