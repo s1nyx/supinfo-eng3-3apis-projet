@@ -3,7 +3,7 @@ const isLoggedIn = (request, response, next) => {
         return next()
     }
 
-    response.status(401).json({ error: "Unauthorized" })
+    response.status(401).json({ error: "You must be logged to an account" })
 }
 
 const notAuthenticated = (request, response, next) => {
@@ -11,7 +11,7 @@ const notAuthenticated = (request, response, next) => {
         return next()
     }
 
-    response.status(400).json({ error: "Already authenticated" })
+    response.status(400).json({ error: "You are already authenticated" })
 }
 
 module.exports = { isLoggedIn, notAuthenticated }

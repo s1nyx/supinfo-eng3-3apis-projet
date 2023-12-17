@@ -7,12 +7,12 @@ exports.signup = async (request, response) => {
         const user = new User({ email, username, password, role: 'user' })
 
         if (!user) {
-            return response.status(400).json({ error: "User not created" })
+            return response.status(400).json({ error: "User couldn't be created" })
         }
 
         await User.register(user, password)
 
-        response.status(201).json({ message: "Inscription réussie !" })
+        response.status(201).json({ message: "You just sign up with success !" })
     } catch (error) {
         console.error(error)
         response.status(500).json({ error: "Internal server error" })
@@ -20,8 +20,6 @@ exports.signup = async (request, response) => {
 }
 
 exports.signin = async (request, response) => {
-    const user = request.user
-
     response.status(200).json({ message: "Connexion réussie !" })
 }
 
