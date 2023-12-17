@@ -6,6 +6,7 @@
   "author": "Killian VINCENT, Anthony PRUYS",
   "license": "MIT",
   "scripts": {
+    "test": "mocha tests",
     "start": "node src/init.js"
   },
   "dependencies": {
@@ -18,5 +19,11 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }
