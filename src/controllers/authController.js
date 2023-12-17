@@ -20,6 +20,10 @@ exports.signup = async (request, response) => {
 }
 
 exports.signin = async (request, response) => {
+    const user = request.user
+
+    console.log(user)
+
     response.status(200).json({ message: "Connexion réussie !" })
 }
 
