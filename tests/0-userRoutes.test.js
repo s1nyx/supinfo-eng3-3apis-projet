@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 let agent = chai.request.agent(app)
-const User = require('../src/models/user')
+const User = require('../src/models/user.js')
 
 const expect = chai.expect
 

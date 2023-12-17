@@ -3,9 +3,7 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 let agent = chai.request.agent(app)
-const Train = require('../src/models/train')
-const TrainStation = require('../src/models/trainStation')
-const User = require('../src/models/user')
+const Train = require('../src/models/train.js')
 const fs = require('fs')
 const path = require('path')
 
@@ -17,55 +15,34 @@ let trainAId
 let trainBId
 
 const adminUser = {
-    email: 'admin.t@example.com',
-    username: 'adminT',
+    email: 'admin@example.com',
+    username: 'admin',
     password: 'password123',
     role: 'admin'
 }
-
 
 //Stations are created in the stations test suite
 const firstTrain = {
     name: "trainA",
     start_station: "Bruxelles",
-    end_station: "Jurbise"
+    end_station: "Jurbise",
+    time_of_departure: new Date()
 }
 
 const secondTrain = {
     name: "trainB",
     start_station: "Jurbise",
-    end_station: "Bruxelles"
+    end_station: "Bruxelles",
+    time_of_departure: new Date()
 }
 
-before(async function() {
-    // Clean the database
-    await Train.deleteMany({})
-
-
-    
-    
+before(async () => {
+    Train.deleteMany({})
 })
 
 describe("Initilization (workaround)", () => {
     
     it("Should login", async () => {
-        // Force wait 2 seconds to avoid overloading the database
-        await new Promise((resolve, reject) => {
-            setTimeout(resolve, 2000)
-        })
-        // Create an admin user
-        await new Promise((resolve, reject) => {
-            agent
-                .post('/users')
-                .send(adminUser)
-                .end((err, res) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(res)
-                    }
-                })
-        })
 
         // Login
         return new Promise((resolve, reject) => {
@@ -117,6 +94,16 @@ describe("GET /trains", () => {
             .get("/trains")
             .end( (err, res) => {
                 expect(res).to.have.status(200)
+                done()
+            })
+    })
+    it("Should get all trains sorted by destination", (done) => {
+        agent
+            .get("/trains?sort=end_station")
+            .end( (err, res) => {
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an("array")
+                console.log(res.body)
                 done()
             })
     })

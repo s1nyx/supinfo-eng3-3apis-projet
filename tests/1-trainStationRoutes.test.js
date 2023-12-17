@@ -3,8 +3,8 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 let agent = chai.request.agent(app)
-const TrainStation = require('../src/models/trainStation')
-const User = require('../src/models/user')
+const TrainStation = require('../src/models/trainStation.js')
+const User = require('../src/models/user.js')
 const fs = require('fs')
 const path = require('path')
 
@@ -16,8 +16,8 @@ let stationId
 let stationBId
 
 const adminUser = {
-    email: 'admin.s@example.com',
-    username: 'adminS',
+    email: 'admin@example.com',
+    username: 'admin',
     password: 'password123',
     role: 'admin'
 }
@@ -48,7 +48,6 @@ before(async function() {
     // Clean the database
     await TrainStation.deleteMany({})
 
-
 })
 
 describe("POST /stations", () => {
@@ -58,20 +57,7 @@ describe("POST /stations", () => {
         We are forced to login here. Bad design, but no other choices
     */
     it("Should create the first station", async () => {
-        // Create an admin user
-        await new Promise((resolve, reject) => {
-            agent
-                .post('/users')
-                .send(adminUser)
-                .end((err, res) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(res)
-                    }
-                })
-        })
-
+        
         // Login
         await new Promise((resolve, reject) => {
             agent
