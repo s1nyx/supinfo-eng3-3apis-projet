@@ -1,9 +1,9 @@
-require('dotenv').config();
+require('dotenv').config()
 
 const express = require('express')
 const mangoose = require('mongoose')
-const session = require('express-session');
-const passport = require('passport');
+const session = require('express-session')
+const passport = require('passport')
 
 const User = require('./models/user')
 
@@ -28,15 +28,15 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
-}));
+}))
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
-passport.use(User.createStrategy());
+passport.use(User.createStrategy())
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 app.use('/users', userRoutes)
 app.use('/trains', trainRoutes)
