@@ -1,7 +1,9 @@
 const TrainStation = require('../models/trainStation')
+const Train = require('../models/train')
 const fs = require("fs")
 const path = require("path")
 const jimp = require("jimp")
+const train = require('../models/train')
 
 exports.createTrainStation = async (request, response) => {
     const { name, open_hour, close_hour, image } = request.body
@@ -23,10 +25,10 @@ exports.getTrainStationList = async (request, response) => {
 
     const sortFields = request.query.sort ? request.query.sort.split(',') : []
 
-    let result = await TrainStation.find()
+    let query = TrainStation.find()
+    const sortOptions = []
 
     if (sortFields.length > 0) { //In case we need to sort
-        const sortOptions = []
         sortFields.foreach((field) => {
             const sortOrder = 1
     
@@ -41,15 +43,16 @@ exports.getTrainStationList = async (request, response) => {
                 sortOptions.push([field, sortOrder])
             }
 
-            result.sort(sortOptions)
+            query.sort(sortOptions)
         })
     }
 
-    if (!result) {
-        return result.status(404).json({error: "Cannot find any train stations"})
+    const stations = await query.exec()
+    if (!stations) {
+        return response.status(404).json({error: "Cannot find any train stations"})
     }
 
-    return response.status(200).json(result)
+    return response.status(200).json(stations)
 }
 
 exports.getTrainStation = async (request, response) => {
@@ -100,7 +103,7 @@ exports.uploadStationImage = async (request, response) => {
         }
 
         //Resize image if it is too big
-        const maxSizeInBytes = 10 //* 1024 * 1024 //10 MB max size
+        const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
         if (file.size > maxSizeInBytes) {
 
             let image = await jimp.read(filePath)
@@ -127,12 +130,23 @@ exports.uploadStationImage = async (request, response) => {
 }
 
 exports.deleteTrainStation = async (request, response) => {
-    //TODO: Ajouter une vérif pour éviter de supprimer une station qui va être utiliser
-    const train = await TrainStation.findByIdAndDelete(request.params.id)
 
-    if (!train) {
+    const trainStation = await TrainStation.findByIdAndDelete(request.params.id)
+
+    if (!trainStation) {
         return response.status(404).json({ error: "Train station not found" })
     }
+
+    // Verify that no trains should go there
+    const trains = await Train.find()
+
+    const filtered = trains.filter((train) => {
+        return (train.start_station_id === request.params.id || train.end_station_id === request.params.id)
+    })
+
+    filtered.forEach(async (train) => {
+        const deleted = await Train.findByIdAndDelete(train._id)
+    })
 
     return response.status(200).json({ message: "Train station deleted successfully" })
 }
