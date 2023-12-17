@@ -43,7 +43,7 @@ before(async function() {
 })
 
 describe("POST /stations/", () => {
-    it("Should create stationA", async (done) => {
+    it("Should create stationA", async () => {
         // Create and login as an admin
         await new Promise((resolve, reject) => {
             agent
@@ -74,15 +74,21 @@ describe("POST /stations/", () => {
                     }
                 })
         })
-        agent
+        return new Promise((resolve, reject) => {
+            agent
             .post('/stations')
             .send(firstStation)
             .end( (err, res) => {
-                console.log(res.body)
-                expect(res).to.have.status(201)
-                expect(res.body).to.be.a('object')
-                done()
+                if (err) {
+                    reject(err)
+                } else {
+                    console.log(res.body)
+                    expect(res).to.have.status(201)
+                    expect(res.body).to.be.a('object')
+                    resolve(res)
+                }
             })
+        })
     })
 
 })
