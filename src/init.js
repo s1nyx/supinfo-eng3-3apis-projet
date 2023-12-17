@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes')
 const authRoutes = require('./routes/authRoutes')
 const trainRoutes = require(('./routes/trainRoutes'))
 const trainStationRoutes = require('./routes/trainStationRoutes')
+const ticketRoutes = require('./routes/ticketRoutes')
 const app = express()
 
 const PORT = 3000
@@ -42,6 +43,7 @@ app.use('/users', userRoutes)
 app.use('/trains', trainRoutes)
 app.use('/stations', trainStationRoutes)
 app.use('/auth', authRoutes)
+app.use('/tickets', ticketRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`)
