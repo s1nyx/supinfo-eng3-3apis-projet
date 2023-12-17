@@ -1,4 +1,4 @@
-const authorizeRoles = (...permittedRoles) => {
+const authorizeRoles = (permittedRoles) => {
     return (request, response, next) => {
         const { user } = request
 

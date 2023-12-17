@@ -39,41 +39,41 @@ before(async function() {
     await TrainStation.deleteMany({})
     await User.deleteMany({})
 
-    // Create and login as an admin
-    await new Promise((resolve, reject) => {
-        agent
-            .post('/users')
-            .send(adminUser)
-            .end((err, res) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(res)
-                }
-            });
-    });
 
-    await new Promise((resolve, reject) => {
-        agent
-            .post('/auth/signin')
-            .send({
-                email: adminUser.email,
-                password: adminUser.password
-            })
-            .end((err, res) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    console.log(res.status)
-                    resolve(res)
-                }
-            })
-    })
 })
 
 describe("POST /stations/", () => {
-    it("Should create stationA", (done) => {
+    it("Should create stationA", async (done) => {
+        // Create and login as an admin
+        await new Promise((resolve, reject) => {
+            agent
+                .post('/users')
+                .send(adminUser)
+                .end((err, res) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(res)
+                    }
+                });
+        });
 
+        await new Promise((resolve, reject) => {
+            agent
+                .post('/auth/signin')
+                .send({
+                    email: adminUser.email,
+                    password: adminUser.password
+                })
+                .end((err, res) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        console.log(res.body)
+                        resolve(res)
+                    }
+                })
+        })
         agent
             .post('/stations')
             .send(firstStation)
