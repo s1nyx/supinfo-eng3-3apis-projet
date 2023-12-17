@@ -37,11 +37,6 @@ exports.updateUser = async (request, response) => {
     const userRole = request.user.role
     const userIdToUpdate = request.params.id
 
-    // Il doit être admin ou alors c'est son propre compte
-    if (userIdToUpdate !== loggedInUserId.toString() && userRole !== 'admin') {
-        return response.status(403).json({ error: "You can only update your own profile unless you're an admin" });
-    }
-
     try {
         const { password } = request.body
 
