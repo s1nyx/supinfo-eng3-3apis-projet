@@ -7,11 +7,13 @@ const { authorizeRoles } = require("../middlewares/roleMiddleware")
 
 const router = express.Router()
 
-
+// Réservation d'un ticket
 router.post('/', validateRequest(ticketSchema), isLoggedIn, ticketController.bookTicket)
 
+// Récupérer la liste des tickets
 router.get("/", isLoggedIn, authorizeRoles(["admin"]),ticketController.getTicketList)
 
+// Valider un ticket
 router.put("/:id", validateRequest(ticketIdSchema), isLoggedIn, authorizeRoles(["admin"]), ticketController.validateTicket)
 
 module.exports = router

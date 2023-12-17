@@ -1,3 +1,8 @@
+/**
+ * Permet de valider les rôles d'un utilisateur en fonction des rôles autorisés
+ * @param permittedRoles
+ * @returns {(function(*, *, *): void)|*}
+ */
 const authorizeRoles = (permittedRoles) => {
     return (request, response, next) => {
         const { user } = request
@@ -10,6 +15,11 @@ const authorizeRoles = (permittedRoles) => {
     }
 }
 
+/**
+ * Permet de valider les rôles d'un utilisateur en fonction des rôles autorisés ou si l'utilisateur est le propriétaire de l'entité demandée
+ * @param permittedRoles
+ * @returns {(function(*, *, *): void)|*}
+ */
 const authorizeSelfOrRoles = (permittedRoles) => {
     return (request, response, next) => {
         const loggedInUserId = request.user._id
