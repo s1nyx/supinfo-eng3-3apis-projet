@@ -14,6 +14,6 @@ router.post('/', validateRequest(ticketSchema), isLoggedIn, ticketController.boo
 router.get("/", isLoggedIn, authorizeRoles(["admin"]),ticketController.getTicketList)
 
 // Valider un ticket
-router.put("/:id", validateRequest(ticketIdSchema), isLoggedIn, authorizeRoles(["admin"]), ticketController.validateTicket)
+router.put("/:id", validateRequest(ticketIdSchema, 'params'), isLoggedIn, authorizeRoles(["admin"]), ticketController.validateTicket)
 
 module.exports = router
