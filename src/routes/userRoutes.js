@@ -8,7 +8,7 @@ const { authorizeSelfOrRoles } = require('../middlewares/roleMiddleware')
 const router = Router()
 
 // Création d'un utilisateur
-router.post("/", validateRequest(userSchema), userController.createUser)
+router.post("/", isLoggedIn, validateRequest(userSchema), userController.createUser)
 
 // Récupérer les informations d'un utilisateur
 router.get('/:id', isLoggedIn, validateRequest(userIdSchema, 'params'), authorizeSelfOrRoles(['employee', 'admin']), userController.getUser)
