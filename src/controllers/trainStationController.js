@@ -21,7 +21,8 @@ exports.createTrainStation = async (request, response) => {
 
         return response.status(201).json({ trainStation: trainStation })
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
     
 }
@@ -53,19 +54,19 @@ exports.getTrainStationList = async (request, response) => {
         }
     
         const stations = await query.exec()
+
         if (!stations) {
             return response.status(404).json({error: "Cannot find any train stations"})
         }
     
         return response.status(200).json(stations)
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
-
 }
 
 exports.getTrainStation = async (request, response) => {
-
     try {
         const trainStation = await TrainStation.findOne({name: request.params.name})
         
@@ -76,13 +77,12 @@ exports.getTrainStation = async (request, response) => {
         return response.status(200).json(trainStation)
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
-    
 }
 
 exports.updateTrainStation = async (request, response) => {
-
     try {
         const trainStation = await TrainStation.findByIdAndUpdate(request.params.id, request.body)
     
@@ -93,7 +93,8 @@ exports.updateTrainStation = async (request, response) => {
         return response.status(200).json({ trainStation: trainStation })
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -107,6 +108,7 @@ exports.uploadStationImage = async (request, response) => {
     
         //Block invalid extensions and filename
         const filePath = `uploads\\${file.originalname}`
+
         if (file.originalname === "info.png") {
             return response.status(401).json({error: `Filename cannot be info.png`})
         }
@@ -121,23 +123,21 @@ exports.uploadStationImage = async (request, response) => {
         //Save the file
         fs.rename(file.path, filePath, async (error) => {
             if (error) {
+                console.error(error)
                 return response.status(500).json({error: `Internal error saving the iamge`})
             }
     
             //Resize image if it is too big
             const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
+
             if (file.size > maxSizeInBytes) {
-    
                 let image = await jimp.read(filePath)
+
                 image.resize(200, 200)
                 image.write(filePath)
-    
-                // return response.status(400).json({error: `File size exceeds the 10 MB limit!`})
             }
         })
         
-        
-    
         const trainStation = await TrainStation.findOneAndUpdate(
             {name: stationName},
             {image: filePath}
@@ -149,7 +149,8 @@ exports.uploadStationImage = async (request, response) => {
         
         response.status(200).json(trainStation)
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 
 }
@@ -160,7 +161,7 @@ exports.deleteTrainStation = async (request, response) => {
         const trainStation = await TrainStation.findByIdAndDelete(request.params.id)
     
         if (!trainStation) {
-            return response.status(404).json({ error: "Train station not found" })
+            return response.status(404).json({ error: "Train station couldn't be found" })
         }
     
         // Verify that no trains should go there
@@ -176,7 +177,7 @@ exports.deleteTrainStation = async (request, response) => {
     
         return response.status(200).json({ message: "Train station deleted successfully" })
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
-    
 }

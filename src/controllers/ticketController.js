@@ -20,9 +20,14 @@ exports.bookTicket = async (request, response) => {
             end_station_id: destination._id
         })
 
+        if (!ticket) {
+            return response.status(400).json({error: "Ticket couldn't be created"})
+        }
+
         response.status(201).json(ticket)
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 
 }
@@ -33,7 +38,8 @@ exports.getTicketList = async (request, response) => {
 
         return response.status(200).json(tickets)
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -45,9 +51,14 @@ exports.validateTicket = async (request, response) => {
             { new: true }
         )
 
+        if (!ticket) {
+            return response.status(404).json({error: "Ticket not found"})
+        }
+
         return response.status(200).json(ticket)
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }

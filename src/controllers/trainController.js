@@ -30,7 +30,8 @@ exports.createTrain = async (request, response) => {
         return response.status(201).json({ train })
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -69,7 +70,8 @@ exports.getTrainList = async (request, response) => {
         return response.status(200).json(trains)
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -85,7 +87,8 @@ exports.getTrain = async (request, response) => {
         return response.status(200).json({ train })
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -101,7 +104,8 @@ exports.updateTrain = async (request, response) => {
         return response.status(200).json({ train })
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
 
@@ -117,6 +121,7 @@ exports.deleteTrain = async (request, response) => {
         return response.status(200).json({ message: "Train deleted successfully" })
 
     } catch (err) {
-        response.status(500).json({error: `Internal server error ${err.message}`})
+        console.error(err)
+        response.status(500).json({error: "Internal server error"})
     }
 }
