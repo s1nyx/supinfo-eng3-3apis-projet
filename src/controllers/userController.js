@@ -5,7 +5,7 @@ exports.createUser = async (request, response) => {
     const { email, username, password, role } = request.body
 
     try {
-        const user = new User({ email, username, password, role })
+        const user = new User({ email, username, role })
 
         if (!user) {
             return response.status(400).json({ error: "User couldn't be created" })
@@ -32,26 +32,23 @@ exports.getUser = async (request, response) => {
 }
 
 exports.updateUser = async (request, response) => {
-    const loggedInUserId = request.user._id
-    const userRole = request.user.role
-    const userIdToUpdate = request.params.id
+    const { password, ...otherUpdates } = request.body
+    const user = await User.findById(userIdToUpdate)
 
-    try {
-        const { password } = request.body
-
-        // FIXME: adapter à passport pour le mdp
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-            request.body.password = hashedPassword
-        }
-
-        const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true })
-
-        response.status(200).json({ user })
-    } catch (error) {
-        console.error(error)
-        response.status(404).json({ error: "User not found" })
+    if (!user) {
+        return response.status(404).json({ error: "User not found" })
     }
+
+    if (password) {
+        await user.setPassword(password)
+        await user.save()
+    }
+
+    if (Object.keys(otherUpdates).length > 0) {
+        await User.findByIdAndUpdate(userIdToUpdate, otherUpdates, { new: true })
+    }
+
+    response.status(200).json({ user })
 }
 
 exports.deleteUser = async (request, response) => {
