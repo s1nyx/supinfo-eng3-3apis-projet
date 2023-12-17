@@ -58,3 +58,9 @@ describe("User registration & login", () => {
         //Add tests here
     })
 })
+
+describe("Station management", () => {
+    it("Should create 3 stations", async () => {
+        
+    })
+})

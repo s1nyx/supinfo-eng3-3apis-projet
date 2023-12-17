@@ -27,7 +27,28 @@ exports.createTrain = async (request, response) => {
 }
 
 exports.getTrainList = async (request, response) => {
+
+    const sortFields = request.query.sort ? request.query.sort.split(',') : []
+    const limit = request.query.limit ? request.query.limit : 10
+
+    if (sortFields.length > 0) {
+
+        sortFields.forEach((field) => {
+            let sortOrder = 1
+            if (field[0] === "-") {
+                sortOrder = -1
+                field = field.substring(1)
+            }
+    
+            if (["name", "start", "end", "time"].includes(field)) {
+                sortOptions.push([field, sortOrder])
+            }
+        })
+    }
+
+
     const trains = await Train.find()
+    trains.sort(sortOptions).limit(limit)
 
     if (!trains) {
         return response.status(404).json({error: "Cannot find any trains"})
@@ -37,7 +58,6 @@ exports.getTrainList = async (request, response) => {
 }
 
 exports.getTrain = async (request, response) => {
-    // TODO: valider le param id
 
     const train = await Train.findById(request.params.id)
 

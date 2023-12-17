@@ -50,7 +50,6 @@ exports.getTrainStationList = async (request, response) => {
 }
 
 exports.getTrainStation = async (request, response) => {
-    // TODO: valider le param id
 
     const trainStation = await TrainStation.findById(request.params.id)
 
