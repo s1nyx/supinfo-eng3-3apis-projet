@@ -1,11 +1,11 @@
-const hasRoles = (...permittedRoles) => {
+const authorizeRoles = (...permittedRoles) => {
     return (request, response, next) => {
         const { user } = request
 
         if (user && permittedRoles.includes(user.role)) {
             next()
         } else {
-            response.status(403).json({ message: 'Forbidden: Insufficient permissions' })
+            response.status(403).json({ message: 'Access denied: Insufficient permissions' })
         }
     }
 }
@@ -16,10 +16,6 @@ const authorizeSelfOrRoles = (permittedRoles) => {
         const requestedUserId = request.params.id
         const userRole = request.user.role
 
-        console.log(loggedInUserId)
-        console.log(requestedUserId)
-        console.log(userRole)
-
         if (loggedInUserId.toString() === requestedUserId || permittedRoles.includes(userRole)) {
             next()
         } else {
@@ -28,4 +24,4 @@ const authorizeSelfOrRoles = (permittedRoles) => {
     }
 }
 
-module.exports = { authorizeSelfOrRoles }
+module.exports = { authorizeRoles, authorizeSelfOrRoles }
