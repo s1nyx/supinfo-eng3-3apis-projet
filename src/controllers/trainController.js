@@ -15,7 +15,9 @@ exports.createTrain = async (request, response) => {
     const train = await Train.create({
         name: name,
         start_station: start_station,
+        start_station_id: start._id,
         end_station: end_station,
+        end_station_id: end._id,
         time_of_departure: time_of_departure
     })
     
@@ -31,6 +33,8 @@ exports.getTrainList = async (request, response) => {
     const sortFields = request.query.sort ? request.query.sort.split(',') : []
     const limit = request.query.limit ? request.query.limit : 10
 
+    const query = Train.find()
+    const sortOptions = []
     if (sortFields.length > 0) {
 
         sortFields.forEach((field) => {
@@ -40,15 +44,16 @@ exports.getTrainList = async (request, response) => {
                 field = field.substring(1)
             }
     
-            if (["name", "start", "end", "time"].includes(field)) {
+            if (["name", "start_station", "end_station"].includes(field)) {
                 sortOptions.push([field, sortOrder])
             }
+            query.sort(sortOptions)
         })
     }
 
-
-    const trains = await Train.find()
-    trains.sort(sortOptions).limit(limit)
+    query.limit(limit)
+    
+    const trains = query.exec()
 
     if (!trains) {
         return response.status(404).json({error: "Cannot find any trains"})
