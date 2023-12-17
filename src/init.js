@@ -4,6 +4,8 @@ const express = require('express')
 const mangoose = require('mongoose')
 const session = require('express-session')
 const passport = require('passport')
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('../openapi.json')
 
 const User = require('./models/user')
 
@@ -38,6 +40,9 @@ passport.use(User.createStrategy())
 
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use('/users', userRoutes)
 app.use('/trains', trainRoutes)

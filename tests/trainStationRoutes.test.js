@@ -59,8 +59,8 @@ describe("POST /stations", () => {
                     } else {
                         resolve(res)
                     }
-                });
-        });
+                })
+        })
 
         // Login
         await new Promise((resolve, reject) => {
