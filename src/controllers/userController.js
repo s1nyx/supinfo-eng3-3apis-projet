@@ -1,21 +1,17 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
-// 10 est un bon nombre de tours pour la sécurité
-const SALT_ROUNDS = 10
-
 exports.createUser = async (request, response) => {
     const { email, username, password, role } = request.body
 
     try {
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-        const user = new User({ email, username, password: hashedPassword, role })
+        const user = new User({ email, username, password, role })
 
         if (!user) {
             return response.status(400).json({ error: "User not created" })
         }
 
-        await user.save()
+        await User.register(user, password)
 
         response.status(201).json({ user })
     } catch (error) {
@@ -40,6 +36,7 @@ exports.updateUser = async (request, response) => {
     try {
         const { password } = request.body
 
+        // FIXME: adapter à passport pour le mdp
         if (password) {
             const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
             request.body.password = hashedPassword

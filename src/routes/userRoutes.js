@@ -11,12 +11,12 @@ const router = Router()
 router.post("/", validateRequest(userSchema), userController.createUser)
 
 // Récupérer les informations d'un utilisateur
-router.get('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, authorizeSelfOrRoles(['employee', 'admin']), userController.getUser)
+router.get('/:id', isLoggedIn, validateRequest(userIdSchema, 'params'), authorizeSelfOrRoles(['employee', 'admin']), userController.getUser)
 
 // Mise à jour des informations d'un utilisateur
-router.patch('/:id', validateRequest(userIdSchema, 'params'), validateRequest(updateUserSchema), isLoggedIn, authorizeSelfOrRoles(['admin']), userController.updateUser)
+router.patch('/:id', isLoggedIn, validateRequest(userIdSchema, 'params'), validateRequest(updateUserSchema), authorizeSelfOrRoles(['admin']), userController.updateUser)
 
 // Suppressions des informations d'un utilisateur
-router.delete('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, userController.deleteUser)
+router.delete('/:id', isLoggedIn, validateRequest(userIdSchema, 'params'), userController.deleteUser)
 
 module.exports = router
