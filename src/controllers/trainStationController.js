@@ -35,8 +35,8 @@ exports.getTrainStationList = async (request, response) => {
         const sortOptions = []
     
         if (sortFields.length > 0) { //In case we need to sort
-            sortFields.foreach((field) => {
-                const sortOrder = 1
+            sortFields.forEach((field) => {
+                let sortOrder = 1
         
                 if (field[0] === "-") {
                     sortOrder = -1
@@ -84,7 +84,7 @@ exports.getTrainStation = async (request, response) => {
 
 exports.updateTrainStation = async (request, response) => {
     try {
-        const trainStation = await TrainStation.findByIdAndUpdate(request.params.id, request.body)
+        const trainStation = await TrainStation.findByIdAndUpdate(request.params.id, request.body, { new: true })
     
         if (!trainStation) {
             return response.status(404).json({ error: "Train station not found" })

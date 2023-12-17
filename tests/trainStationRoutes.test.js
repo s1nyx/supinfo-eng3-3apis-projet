@@ -8,8 +8,7 @@ const User = require('../src/models/user')
 
 const expect = chai.expect
 
-let firstStationId
-let secondStationId
+let stationId
 
 const adminUser = {
     email: 'admin.s@example.com',
@@ -108,8 +107,53 @@ describe("POST /stations", () => {
                 expect(res).to.have.status(201)
                 expect(res.body).to.be.a('object')
                 expect(res.body).to.have.property('_id')
+                stationId = res.body._id
                 done()
             })
     })
 
+})
+
+describe("GET /stations", () => {
+
+    it("Should get all stations", (done) => {
+        agent
+            .get('/stations')
+            .end( (err, res) => {
+                
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an("array")
+                expect(res.body[0]).to.have.property("name", "Bruxelles")
+                done()
+            })
+    })
+
+    it("Should get all stations sorted", (done) => {
+        agent
+            .get('/stations?sort=-name')
+            .end( (err, res) => {
+
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an("array")
+                expect(res.body[0]).to.have.property("name", "Jurbise")
+                done()
+            })
+    })
+})
+
+describe("PATCH /stations/{stationId}", () => {
+    
+    it("Should update a station", (done) => {
+        agent
+            .patch(`/stations/${stationId}`)
+            .send(
+                {close_hour: "1990-01-01T21:00:00Z"}
+            )
+            .end( (err, res) => {
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.a('object')
+                expect(res.body).to.have.property("close_hour", "1990-01-01T21:00:00.000Z")
+                done()
+            })
+    })
 })

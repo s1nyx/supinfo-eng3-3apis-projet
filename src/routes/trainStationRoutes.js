@@ -21,7 +21,7 @@ router.get('/:name', validateRequest(stationNameSchema, 'params'), trainStationC
 router.put('/:id', validateRequest(stationIdSchema, 'params'), isLoggedIn, authorizeRoles(['admin']), upload.single("image"), trainStationController.uploadStationImage)
 
 // Mise à jour des informations d'une station
-router.patch('/:id', validateRequest(updateStationSchema), validateRequest(stationIdSchema), isLoggedIn, authorizeRoles(['admin']), trainStationController.updateTrainStation)
+router.patch('/:id', validateRequest(updateStationSchema), validateRequest(stationIdSchema, 'params'), isLoggedIn, authorizeRoles(['admin']), trainStationController.updateTrainStation)
 
 // Suppressions des informations d'une station
 // Utilise l'ID comme forme de confirmation (connaître le nom n'est pas suffisant)
