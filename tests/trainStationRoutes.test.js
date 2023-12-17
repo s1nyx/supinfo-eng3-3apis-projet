@@ -39,37 +39,56 @@ before(async function() {
     await TrainStation.deleteMany({})
     await User.deleteMany({})
 
-    await agent
-        .post('/users')
-        .send(adminUser)
+
 })
-
-beforeEach(async function() {
-    // Create and login as an admin
-
-    await agent
-        .post('/auth/signin')
-        .send({
-            email: adminUser.email,
-            password: adminUser.password
-        })
-})
-
 
 describe("POST /stations/", () => {
+    it("Should create stationA", async () => {
+        // Create and login as an admin
+        await new Promise((resolve, reject) => {
+            agent
+                .post('/users')
+                .send(adminUser)
+                .end((err, res) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(res)
+                    }
+                });
+        });
 
-
-    it("Should create stationA", (done) => {
-
-        agent
-            .post('/stations')
-            .send(firstStation)
-            .end( (err, res) => {
-                console.log(res.body)
-                expect(res).to.have.status(201)
-                expect(res.body).to.be.a('object')
-                done()
-            })
-
+        await new Promise((resolve, reject) => {
+            agent
+                .post('/auth/signin')
+                .send({
+                    email: adminUser.email,
+                    password: adminUser.password
+                })
+                .end((err, res) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        console.log(res.body)
+                        resolve(res)
+                    }
+                })
+        })
+        return new Promise((resolve, reject) => {
+            agent
+                .post('/stations')
+                .send(firstStation)
+                .end( (err, res) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        console.log(res.body)
+                        expect(res).to.have.status(201)
+                        expect(res.body).to.be.a('object')
+                        resolve(res)
+                    }
+                })
+        })
     })
+
 })
