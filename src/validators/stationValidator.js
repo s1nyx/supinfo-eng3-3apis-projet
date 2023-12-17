@@ -8,9 +8,8 @@ const stationSchema = joi.object({
 
 const updateStationSchema = joi.object({
     name: joi.string(),
-    open_hour: joi.string(),
-    end_hour: joi.string(),
-    time_of_departure: joi.date()
+    open_hour: joi.date(),
+    end_hour: joi.date(),
 }).min(1)
 
 const stationIdSchema = joi.object({
