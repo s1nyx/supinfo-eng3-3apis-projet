@@ -39,41 +39,28 @@ before(async function() {
     await TrainStation.deleteMany({})
     await User.deleteMany({})
 
-
+    await agent
+        .post('/users')
+        .send(adminUser)
 })
 
-describe("POST /stations/", () => {
-    it("Should create stationA", async (done) => {
-        // Create and login as an admin
-        await new Promise((resolve, reject) => {
-            agent
-                .post('/users')
-                .send(adminUser)
-                .end((err, res) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(res)
-                    }
-                });
-        });
+beforeEach(async function() {
+    // Create and login as an admin
 
-        await new Promise((resolve, reject) => {
-            agent
-                .post('/auth/signin')
-                .send({
-                    email: adminUser.email,
-                    password: adminUser.password
-                })
-                .end((err, res) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        console.log(res.body)
-                        resolve(res)
-                    }
-                })
+    await agent
+        .post('/auth/signin')
+        .send({
+            email: adminUser.email,
+            password: adminUser.password
         })
+})
+
+
+describe("POST /stations/", () => {
+
+
+    it("Should create stationA", (done) => {
+
         agent
             .post('/stations')
             .send(firstStation)
@@ -83,6 +70,6 @@ describe("POST /stations/", () => {
                 expect(res.body).to.be.a('object')
                 done()
             })
-    })
 
+    })
 })
