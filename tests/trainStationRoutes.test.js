@@ -5,10 +5,15 @@ chai.use(chaiHttp)
 let agent = chai.request.agent(app)
 const TrainStation = require('../src/models/trainStation')
 const User = require('../src/models/user')
+const fs = require('fs')
+const path = require('path')
+
+
 
 const expect = chai.expect
 
 let stationId
+let stationBId
 
 const adminUser = {
     email: 'admin.s@example.com',
@@ -92,6 +97,7 @@ describe("POST /stations", () => {
                     expect(res).to.have.status(201)
                     expect(res.body).to.be.a('object')
                     expect(res.body).to.have.property('_id')
+                    stationBId = res.body._id
                     resolve(res)
                 }
             })
@@ -150,9 +156,39 @@ describe("PATCH /stations/{stationId}", () => {
                 {close_hour: "1990-01-01T21:00:00Z"}
             )
             .end( (err, res) => {
+
                 expect(res).to.have.status(200)
                 expect(res.body).to.be.a('object')
                 expect(res.body).to.have.property("close_hour", "1990-01-01T21:00:00.000Z")
+                done()
+            })
+    })
+})
+
+describe("DELETE /stations/{stationId}", () => {
+
+    it ("Should delete a station", (done) => {
+        agent
+            .delete(`/stations/${stationId}`)
+            .end( (err, res) => {
+                
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.a('object')
+                done()
+            })
+    })
+})
+
+describe("PUT /stations/{stationId}", () => {
+
+    it ("Should upload an image", (done) => {
+        agent
+            .put(`/stations/Bruxelles`)
+            .attach('image', fs.readFileSync(path.join(__dirname, "./Gare_de_Jurbise_Wikipedia.jpg")), "Gare_de_Jurbise_Wikipedia.jpg") 
+            .end( (err, res) => {
+                console.log(res.body)
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.a('object')
                 done()
             })
     })

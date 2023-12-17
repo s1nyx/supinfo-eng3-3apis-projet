@@ -102,7 +102,7 @@ exports.updateTrainStation = async (request, response) => {
 exports.uploadStationImage = async (request, response) => { 
 
     try {
-        const stationName = request.params.name
+        const stationId = request.params.id
     
         const file = request.file
     
@@ -115,7 +115,7 @@ exports.uploadStationImage = async (request, response) => {
     
         const extension = filePath.split('.').pop()
         
-        if (!["png", "jpeg"].includes(extension)) {
+        if (!["png", "jpeg", "jpg"].includes(extension)) {
             return response.status(401).json({error: `Only png or jpeg files are allowed`})
         }
         
@@ -138,13 +138,14 @@ exports.uploadStationImage = async (request, response) => {
             }
         })
         
-        const trainStation = await TrainStation.findOneAndUpdate(
-            {name: stationName},
-            {image: filePath}
+        const trainStation = await TrainStation.findByIdAndUpdate(
+            stationId,
+            {image: filePath},
+            {new: true}
         )
     
         if (!trainStation) {
-            return response.status(404).json({error: `No station named ${stationName} was found`})
+            return response.status(404).json({error: `No station with id ${stationId} was found`})
         }
         
         response.status(200).json(trainStation)
