@@ -33,7 +33,7 @@ exports.getUser = async (request, response) => {
 
 exports.updateUser = async (request, response) => {
     const { password, ...otherUpdates } = request.body
-    const user = await User.findById(userIdToUpdate)
+    const user = await User.findById(request.params.id)
 
     if (!user) {
         return response.status(404).json({ error: "User not found" })
@@ -45,7 +45,7 @@ exports.updateUser = async (request, response) => {
     }
 
     if (Object.keys(otherUpdates).length > 0) {
-        await User.findByIdAndUpdate(userIdToUpdate, otherUpdates, { new: true })
+        await User.findByIdAndUpdate(request.params.id, otherUpdates, { new: true })
     }
 
     response.status(200).json({ user })

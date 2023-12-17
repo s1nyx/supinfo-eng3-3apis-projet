@@ -86,7 +86,9 @@ describe('PATCH /users/:id', () => {
     it('should update the test user to have a new username', (done) => {
         agent
             .patch('/users/' + userId)
-            .send({ username: 'UpdatedUsername' })
+            .send({
+                username: "dzadza99"
+            })
             .end((err, res) => {
                 expect(res).to.have.status(200)
                 done()
