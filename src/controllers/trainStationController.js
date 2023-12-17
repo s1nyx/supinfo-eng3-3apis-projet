@@ -19,7 +19,7 @@ exports.createTrainStation = async (request, response) => {
             return response.status(400).json({ error: "Train station not created" })
         }
 
-        return response.status(201).json({ trainStation: trainStation })
+        return response.status(201).json(trainStation)
     } catch (err) {
         console.error(err)
         response.status(500).json({error: "Internal server error"})
@@ -90,7 +90,7 @@ exports.updateTrainStation = async (request, response) => {
             return response.status(404).json({ error: "Train station not found" })
         }
     
-        return response.status(200).json({ trainStation: trainStation })
+        return response.status(200).json(trainStation)
 
     } catch (err) {
         console.error(err)

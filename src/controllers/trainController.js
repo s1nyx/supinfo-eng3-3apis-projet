@@ -27,7 +27,7 @@ exports.createTrain = async (request, response) => {
             return response.status(400).json({ error: "Train not created" })
         }
     
-        return response.status(201).json({ train })
+        return response.status(201).json(train)
 
     } catch (err) {
         console.error(err)
