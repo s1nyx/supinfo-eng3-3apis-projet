@@ -37,7 +37,7 @@ const secondTrain = {
 }
 
 before(async () => {
-    Train.deleteMany({})
+    await Train.deleteMany({})
 })
 
 describe("Initilization (workaround)", () => {
@@ -97,13 +97,50 @@ describe("GET /trains", () => {
                 done()
             })
     })
+
     it("Should get all trains sorted by destination", (done) => {
         agent
             .get("/trains?sort=end_station")
             .end( (err, res) => {
                 expect(res).to.have.status(200)
                 expect(res.body).to.be.an("array")
-                console.log(res.body)
+                expect(res.body[0]).to.have.property("end_station", "Bruxelles")
+                done()
+            })
+    })
+
+    it("Should get all trains sorted by name", (done) => {
+        agent
+            .get("/trains?sort=-name")
+            .end( (err, res) => {
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an("array")
+                expect(res.body[0]).to.have.property("name", "trainB")
+                done()
+            })
+    })
+})
+
+describe("PATCH /trains/{trainId}", () => {
+    it("Should update train", (done) => {
+        agent
+            .patch(`/trains/${trainAId}`)
+            .send({name: "first train"})
+            .end( (err, res) => {
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.a('object')
+                expect(res.body).to.have.property("name", "first train")
+                done()
+            })
+    })
+})
+
+describe("DELETE /trains/{trainId}", () => {
+    it("Should delete a train", (done) => {
+        agent
+            .delete(`/trains/${trainAId}`)
+            .end( (err, res) => {
+                expect(res).to.have.status(200)
                 done()
             })
     })

@@ -40,9 +40,10 @@ exports.getTrainList = async (request, response) => {
     try {
         const sortFields = request.query.sort ? request.query.sort.split(',') : []
         const limit = request.query.limit ? request.query.limit : 10
-    
+
         const query = Train.find()
         const sortOptions = []
+
         if (sortFields.length > 0) {
     
             sortFields.forEach((field) => {
@@ -61,7 +62,7 @@ exports.getTrainList = async (request, response) => {
     
         query.limit(limit)
         
-        const trains = query.exec()
+        const trains = await query.exec()
     
         if (!trains) {
             return response.status(404).json({error: "Cannot find any trains"})
@@ -95,13 +96,13 @@ exports.getTrain = async (request, response) => {
 exports.updateTrain = async (request, response) => {
 
     try {
-        const train = await Train.findByIdAndUpdate(request.params.id, request.body)
+        const train = await Train.findByIdAndUpdate(request.params.id, request.body, {new: true})
     
         if (!train) {
             return response.status(404).json({ error: "Train not found" })
         }
     
-        return response.status(200).json({ train })
+        return response.status(200).json(train)
 
     } catch (err) {
         console.error(err)
