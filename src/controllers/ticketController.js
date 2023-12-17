@@ -20,7 +20,7 @@ exports.bookTicket = async (request, response) => {
             end_station_id: destination._id
         })
 
-        response.status(200).json(ticket)
+        response.status(201).json(ticket)
     } catch (err) {
         response.status(500).json({error: `Internal server error ${err.message}`})
     }
