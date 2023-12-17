@@ -6,7 +6,7 @@ const jimp = require("jimp")
 const train = require('../models/train')
 
 exports.createTrainStation = async (request, response) => {
-    const { name, open_hour, close_hour, image } = request.body
+    const { name, open_hour, close_hour } = request.body
     const trainStation = await TrainStation.create({
         name: name,
         open_hour: open_hour,

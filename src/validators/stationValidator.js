@@ -3,8 +3,7 @@ const joi = require('joi')
 const stationSchema = joi.object({
     name: joi.string().required(),
     open_hour: joi.date().required(),
-    close_hour: joi.date().required(),
-    image: joi.string().required()
+    close_hour: joi.date().required()
 })
 
 const updateStationSchema = joi.object({
