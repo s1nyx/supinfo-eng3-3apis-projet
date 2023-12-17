@@ -20,7 +20,7 @@ exports.signup = async (request, response) => {
 }
 
 exports.signin = async (request, response) => {
-    response.status(200).json({ message: "Connexion réussie !" })
+    response.status(200).json({ message: "Logged in with success !" })
 }
 
 exports.signout = async (request, response) => {
@@ -29,6 +29,6 @@ exports.signout = async (request, response) => {
             return next(error)
         }
 
-        response.status(200).json({ message: "Déconnexion réussie !" })
+        response.status(200).json({ message: "Disconnected successfully !" })
     })
 }
