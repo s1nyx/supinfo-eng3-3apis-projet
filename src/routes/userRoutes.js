@@ -14,7 +14,7 @@ router.post("/", validateRequest(userSchema), userController.createUser)
 router.get('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, authorizeSelfOrRoles(['employee', 'admin']), userController.getUser)
 
 // Mise à jour des informations d'un utilisateur
-router.patch('/:id', validateRequest(userIdSchema, 'params'), validateRequest(updateUserSchema), isLoggedIn, userController.updateUser)
+router.patch('/:id', validateRequest(userIdSchema, 'params'), validateRequest(updateUserSchema), isLoggedIn, authorizeSelfOrRoles(['admin']), userController.updateUser)
 
 // Suppressions des informations d'un utilisateur
 router.delete('/:id', validateRequest(userIdSchema, 'params'), isLoggedIn, userController.deleteUser)

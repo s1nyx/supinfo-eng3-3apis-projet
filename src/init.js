@@ -25,7 +25,7 @@ app.use(express.json())
 
 // Utilisation des sessions
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Remplacez par une chaîne de caractères secrète
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
