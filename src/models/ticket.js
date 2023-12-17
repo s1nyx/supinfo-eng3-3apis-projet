@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const trainSchema = new mongoose.Schema({
+const ticketSchema = new mongoose.Schema({
     username: {type: String, required: true},
     start_station: {type: String, required: true},
     start_station_id: {type: String, required: true},
@@ -9,4 +9,4 @@ const trainSchema = new mongoose.Schema({
     valid: {type: Boolean, default: false}
 })
 
-module.exports = mongoose.model("Train", trainSchema, "trains")
+module.exports = mongoose.model("Ticket", ticketSchema, "ticket")

@@ -1,7 +1,7 @@
 const Ticket = require("../models/ticket")
 const Station = require("../models/trainStation")
 
-module.export.bookTicket = async (request, response) => {
+exports.bookTicket = async (request, response) => {
     try {
         const {username, start_station, end_station} = request.body
     
@@ -19,13 +19,15 @@ module.export.bookTicket = async (request, response) => {
             end_station: end_station,
             end_station_id: destination._id
         })
+
+        response.status(200).json(ticket)
     } catch (err) {
         response.status(500).json({error: `Internal server error ${err.message}`})
     }
 
 }
 
-module.export.getTicketList = async (request, response) => {
+exports.getTicketList = async (request, response) => {
     try {
         const tickets = await Ticket.find()
 
@@ -35,13 +37,13 @@ module.export.getTicketList = async (request, response) => {
     }
 }
 
-module.export.validateTicket = async (request, response) => {
+exports.validateTicket = async (request, response) => {
     try {
-        const ticket = Ticket.findById(request.params.id)
-
-        ticket.valid = true
-
-        await ticket.save()
+        const ticket = await Ticket.findByIdAndUpdate(
+            request.params.id,
+            { valid: true },
+            { new: true }
+        )
 
         return response.status(200).json(ticket)
 
