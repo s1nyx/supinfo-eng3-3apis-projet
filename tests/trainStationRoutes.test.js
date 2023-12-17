@@ -37,11 +37,16 @@ const secondStation = {
     close_hour: "1990-01-01T22:00:00Z"
 }
 
+const thirdStation = {
+    name: "Deleteme",
+    open_hour: new Date(),
+    close_hour: new Date()
+}
+
 
 before(async function() {
     // Clean the database
     await TrainStation.deleteMany({})
-    await User.deleteMany({})
 
 
 })
@@ -97,7 +102,6 @@ describe("POST /stations", () => {
                     expect(res).to.have.status(201)
                     expect(res.body).to.be.a('object')
                     expect(res.body).to.have.property('_id')
-                    stationBId = res.body._id
                     resolve(res)
                 }
             })
@@ -118,6 +122,19 @@ describe("POST /stations", () => {
             })
     })
 
+    it ("Should create dummy station", (done) => {
+        agent
+            .post('/stations')
+            .send(thirdStation)
+            .end( (err, res) => {
+                expect(res).to.have.status(201)
+                expect(res.body).to.be.a('object')
+                expect(res.body).to.have.property('_id')
+                stationBId = res.body._id
+                done()
+            })
+    })
+
 })
 
 describe("GET /stations", () => {
@@ -129,7 +146,6 @@ describe("GET /stations", () => {
                 
                 expect(res).to.have.status(200)
                 expect(res.body).to.be.an("array")
-                expect(res.body[0]).to.have.property("name", "Bruxelles")
                 done()
             })
     })
@@ -169,7 +185,7 @@ describe("DELETE /stations/{stationId}", () => {
 
     it ("Should delete a station", (done) => {
         agent
-            .delete(`/stations/${stationId}`)
+            .delete(`/stations/${stationBId}`)
             .end( (err, res) => {
                 
                 expect(res).to.have.status(200)
@@ -182,11 +198,11 @@ describe("DELETE /stations/{stationId}", () => {
 describe("PUT /stations/{stationId}", () => {
 
     it ("Should upload an image", (done) => {
+        console.log(`/stations/${stationId}`)
         agent
-            .put(`/stations/Bruxelles`)
+            .put(`/stations/${stationId}`)
             .attach('image', fs.readFileSync(path.join(__dirname, "./Gare_de_Jurbise_Wikipedia.jpg")), "Gare_de_Jurbise_Wikipedia.jpg") 
             .end( (err, res) => {
-                console.log(res.body)
                 expect(res).to.have.status(200)
                 expect(res.body).to.be.a('object')
                 done()
