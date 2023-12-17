@@ -1,4 +1,7 @@
 const TrainStation = require('../models/trainStation')
+const fs = require("fs")
+const path = require("path")
+const utils = require("../utils/resize")
 
 exports.createTrainStation = async (request, response) => {
     const { name, open_hour, close_hour, image } = request.body
@@ -51,7 +54,18 @@ exports.getTrainStationList = async (request, response) => {
 
 exports.getTrainStation = async (request, response) => {
 
-    const trainStation = await TrainStation.findById(request.params.id)
+    const trainStation = await TrainStation.findOne({name: request.params.name})
+
+    if (!trainStation) {
+        return response.status(404).json({ error: "Train station not found" })
+    }
+
+    return response.status(200).json(trainStation)
+}
+
+exports.updateTrainStation = async (request, response) => {
+
+    const trainStation = await TrainStation.findByIdAndUpdate(request.params.id, request.body)
 
     if (!trainStation) {
         return response.status(404).json({ error: "Train station not found" })
@@ -60,15 +74,36 @@ exports.getTrainStation = async (request, response) => {
     return response.status(200).json({ trainStation: trainStation })
 }
 
-exports.updateTrainStation = async (request, response) => {
-    //Les trains utilisent l'id de la station, donc aucun risque avec une mise à jour
-    const trainStation = await TrainStation.findByIdAndUpdate(request.params.id, request.body)
+//Envoie de l'image pour la station de train
+exports.uploadStationImage = async (request, response) => { 
+    const stationName = request.params.name
 
-    if (!trainStation) {
-        return response.status(404).json({ error: "Train station not found" })
+    const file = request.file
+
+    const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
+    if (file.size > maxSizeInBytes) {
+        return resizeImage.status(400).json({error: `File size exceeds the 10 MB limit!`})
     }
 
-    return response.status(200).json({ trainStation: trainStation })
+    const filePath = `uploads\\${file.originalname}`
+
+    fs.rename(file.path, filePath, (error) => {
+        if (error) {
+           return response.status(500).json({error: `Internal error saving the iamge`})
+        }
+    })
+
+    const trainStation = await TrainStation.findOneAndUpdate(
+        {name: stationName},
+        {image: filePath}
+    )
+
+    if (!trainStation) {
+        return response.status(404).json({error: `No station named ${stationName} was found`})
+    }
+    
+    response.status(200).json(trainStation)
+
 }
 
 exports.deleteTrainStation = async (request, response) => {
