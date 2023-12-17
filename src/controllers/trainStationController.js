@@ -1,7 +1,7 @@
 const TrainStation = require('../models/trainStation')
 const fs = require("fs")
 const path = require("path")
-const utils = require("../utils/resize")
+const jimp = require("jimp")
 
 exports.createTrainStation = async (request, response) => {
     const { name, open_hour, close_hour, image } = request.body
@@ -9,7 +9,7 @@ exports.createTrainStation = async (request, response) => {
         name: name,
         open_hour: open_hour,
         close_hour: close_hour,
-        image: image //Image is the file path for the image
+        image: "uploads/info.png" //Image is the file path for the image
     })
 
     if (!trainStation) {
@@ -80,24 +80,33 @@ exports.uploadStationImage = async (request, response) => {
 
     const file = request.file
 
-    //Block invalid extensions and save upload
+    //Block invalid extensions and filename
     const filePath = `uploads\\${file.originalname}`
+    if (file.originalname === "info.png") {
+        return response.status(401).json({error: `Filename cannot be info.png`})
+    }
+
     const extension = filePath.split('.').pop()
     
     if (!["png", "jpeg"].includes(extension)) {
-        return response.status(400).json({error: `Only png or jpeg files are allowed`})
+        return response.status(401).json({error: `Only png or jpeg files are allowed`})
     }
     
     
-    
-    fs.rename(file.path, filePath, (error) => {
+    //Save the file
+    fs.rename(file.path, filePath, async (error) => {
         if (error) {
             return response.status(500).json({error: `Internal error saving the iamge`})
         }
+
         //Resize image if it is too big
-        const maxSizeInBytes = 10 * 1024 * 1024 //10 MB max size
+        const maxSizeInBytes = 10 //* 1024 * 1024 //10 MB max size
         if (file.size > maxSizeInBytes) {
-            utils.resizeImage(filePath)
+
+            let image = await jimp.read(filePath)
+            image.resize(200, 200)
+            image.write(filePath)
+
             // return response.status(400).json({error: `File size exceeds the 10 MB limit!`})
         }
     })
