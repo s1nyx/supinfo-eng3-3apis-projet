@@ -14,7 +14,7 @@ const trainStationRoutes = require('./routes/trainStationRoutes')
 const ticketRoutes = require('./routes/ticketRoutes')
 const app = express()
 
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 mangoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to the database'))
